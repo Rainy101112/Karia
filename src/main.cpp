@@ -13,5 +13,9 @@ int main(int argc, char *argv[])
 
     engine.loadFromModule("Karia", "Main");
 
+    //if (engine.rootObjects().isEmpty()) {
+    //    return -1;
+    //}
+
     return app.exec();
 }

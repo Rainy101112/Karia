@@ -1,0 +1,5 @@
+--resource
+/home/rainy/clone/kdevelop-projects/Karia/build/src/.qt/rcc/qmake_Karia.qrc
+--resource
+/home/rainy/clone/kdevelop-projects/Karia/build/src/.qt/rcc/karia_raw_qml_0.qrc
+/Karia/qml/Main.qml

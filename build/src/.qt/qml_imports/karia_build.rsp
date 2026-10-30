@@ -1,0 +1,14 @@
+-rootPath
+/home/rainy/clone/kdevelop-projects/Karia/src
+-cmake-output
+-output-file
+/home/rainy/clone/kdevelop-projects/Karia/build/src/.qt/qml_imports/karia_build.cmake
+-importPath
+/home/rainy/clone/kdevelop-projects/Karia/build/src
+-importPath
+/home/rainy/clone/kdevelop-projects/Karia/build/src/Karia
+-importPath
+/usr/lib/qt6/qml
+-qrcFiles
+/home/rainy/clone/kdevelop-projects/Karia/build/src/.qt/rcc/qmake_Karia.qrc
+/home/rainy/clone/kdevelop-projects/Karia/build/src/.qt/rcc/karia_raw_qml_0.qrc

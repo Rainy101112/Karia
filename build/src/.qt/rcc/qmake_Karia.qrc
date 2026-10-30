@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="/Karia">
+    <file alias="qmldir">/home/rainy/clone/kdevelop-projects/Karia/build/src/Karia/qmldir</file>
+  </qresource>
+</RCC>
+

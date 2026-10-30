@@ -1,0 +1,8 @@
+karia_autogen/timestamp: \
+	/home/rainy/clone/kdevelop-projects/Karia/build/src/.qt/qml_imports/karia_conf.cmake \
+	/home/rainy/clone/kdevelop-projects/Karia/src/CMakeLists.txt \
+	/home/rainy/clone/kdevelop-projects/Karia/src/main.cpp \
+	/usr/lib/cmake/Qt6Core/Qt6CoreConfigureFileTemplate.in \
+	/usr/lib/cmake/Qt6Qml/Qt6QmlModuleDirMappingTemplate.qrc.in \
+	/usr/lib/cmake/Qt6Qml/Qt6qmldirTemplate.cmake.in \
+	/usr/bin/cmake

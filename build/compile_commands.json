@@ -1,0 +1,44 @@
+[
+{
+  "directory": "/home/rainy/clone/kdevelop-projects/Karia/build",
+  "command": "/usr/bin/c++ -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_OPENGL_LIB -DQT_QMLINTEGRATION_LIB -DQT_QML_LIB -DQT_QUICK_LIB -I/home/rainy/clone/kdevelop-projects/Karia/build/src/karia_autogen/include -I/home/rainy/clone/kdevelop-projects/Karia/src -isystem /usr/include/qt6/QtQml -isystem /usr/include/qt6 -isystem /usr/include/qt6/QtCore -isystem /usr/lib/qt6/mkspecs/linux-g++ -isystem /usr/include/qt6/QtQmlIntegration -isystem /usr/include/qt6/QtNetwork -isystem /usr/include/qt6/QtQuick -isystem /usr/include/qt6/QtGui -isystem /usr/include/qt6/QtOpenGL -g -std=gnu++17 -mno-direct-extern-access -o src/CMakeFiles/karia.dir/karia_autogen/mocs_compilation.cpp.o -c /home/rainy/clone/kdevelop-projects/Karia/build/src/karia_autogen/mocs_compilation.cpp",
+  "file": "/home/rainy/clone/kdevelop-projects/Karia/build/src/karia_autogen/mocs_compilation.cpp",
+  "output": "/home/rainy/clone/kdevelop-projects/Karia/build/src/CMakeFiles/karia.dir/karia_autogen/mocs_compilation.cpp.o"
+},
+{
+  "directory": "/home/rainy/clone/kdevelop-projects/Karia/build",
+  "command": "/usr/bin/c++ -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_OPENGL_LIB -DQT_QMLINTEGRATION_LIB -DQT_QML_LIB -DQT_QUICK_LIB -I/home/rainy/clone/kdevelop-projects/Karia/build/src/karia_autogen/include -I/home/rainy/clone/kdevelop-projects/Karia/src -isystem /usr/include/qt6/QtQml -isystem /usr/include/qt6 -isystem /usr/include/qt6/QtCore -isystem /usr/lib/qt6/mkspecs/linux-g++ -isystem /usr/include/qt6/QtQmlIntegration -isystem /usr/include/qt6/QtNetwork -isystem /usr/include/qt6/QtQuick -isystem /usr/include/qt6/QtGui -isystem /usr/include/qt6/QtOpenGL -g -std=gnu++17 -mno-direct-extern-access -o src/CMakeFiles/karia.dir/main.cpp.o -c /home/rainy/clone/kdevelop-projects/Karia/src/main.cpp",
+  "file": "/home/rainy/clone/kdevelop-projects/Karia/src/main.cpp",
+  "output": "/home/rainy/clone/kdevelop-projects/Karia/build/src/CMakeFiles/karia.dir/main.cpp.o"
+},
+{
+  "directory": "/home/rainy/clone/kdevelop-projects/Karia/build",
+  "command": "/usr/bin/c++ -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_OPENGL_LIB -DQT_QMLINTEGRATION_LIB -DQT_QML_LIB -DQT_QUICK_LIB -I/home/rainy/clone/kdevelop-projects/Karia/build/src/karia_autogen/include -I/home/rainy/clone/kdevelop-projects/Karia/src -isystem /usr/include/qt6/QtQml -isystem /usr/include/qt6 -isystem /usr/include/qt6/QtCore -isystem /usr/lib/qt6/mkspecs/linux-g++ -isystem /usr/include/qt6/QtQmlIntegration -isystem /usr/include/qt6/QtNetwork -isystem /usr/include/qt6/QtQuick -isystem /usr/include/qt6/QtGui -isystem /usr/include/qt6/QtOpenGL -g -std=gnu++17 -mno-direct-extern-access -o src/CMakeFiles/karia.dir/karia_qmltyperegistrations.cpp.o -c /home/rainy/clone/kdevelop-projects/Karia/build/src/karia_qmltyperegistrations.cpp",
+  "file": "/home/rainy/clone/kdevelop-projects/Karia/build/src/karia_qmltyperegistrations.cpp",
+  "output": "/home/rainy/clone/kdevelop-projects/Karia/build/src/CMakeFiles/karia.dir/karia_qmltyperegistrations.cpp.o"
+},
+{
+  "directory": "/home/rainy/clone/kdevelop-projects/Karia/build",
+  "command": "/usr/bin/c++ -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_OPENGL_LIB -DQT_QMLINTEGRATION_LIB -DQT_QML_LIB -DQT_QUICK_LIB -I/home/rainy/clone/kdevelop-projects/Karia/build/src/karia_autogen/include -I/home/rainy/clone/kdevelop-projects/Karia/src -isystem /usr/include/qt6/QtQml -isystem /usr/include/qt6 -isystem /usr/include/qt6/QtCore -isystem /usr/lib/qt6/mkspecs/linux-g++ -isystem /usr/include/qt6/QtQmlIntegration -isystem /usr/include/qt6/QtNetwork -isystem /usr/include/qt6/QtQuick -isystem /usr/include/qt6/QtGui -isystem /usr/include/qt6/QtOpenGL -g -std=gnu++17 -mno-direct-extern-access -o src/CMakeFiles/karia.dir/.qt/rcc/qrc_qmake_Karia.cpp.o -c /home/rainy/clone/kdevelop-projects/Karia/build/src/.qt/rcc/qrc_qmake_Karia.cpp",
+  "file": "/home/rainy/clone/kdevelop-projects/Karia/build/src/.qt/rcc/qrc_qmake_Karia.cpp",
+  "output": "/home/rainy/clone/kdevelop-projects/Karia/build/src/CMakeFiles/karia.dir/.qt/rcc/qrc_qmake_Karia.cpp.o"
+},
+{
+  "directory": "/home/rainy/clone/kdevelop-projects/Karia/build",
+  "command": "/usr/bin/c++ -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_OPENGL_LIB -DQT_QMLINTEGRATION_LIB -DQT_QML_LIB -DQT_QUICK_LIB -I/home/rainy/clone/kdevelop-projects/Karia/build/src/karia_autogen/include -I/home/rainy/clone/kdevelop-projects/Karia/src -isystem /usr/include/qt6/QtQml -isystem /usr/include/qt6 -isystem /usr/include/qt6/QtCore -isystem /usr/lib/qt6/mkspecs/linux-g++ -isystem /usr/include/qt6/QtQmlIntegration -isystem /usr/include/qt6/QtNetwork -isystem /usr/include/qt6/QtQuick -isystem /usr/include/qt6/QtGui -isystem /usr/include/qt6/QtOpenGL -g -std=gnu++17 -mno-direct-extern-access -o src/CMakeFiles/karia.dir/.rcc/qmlcache/karia_qmlcache_loader.cpp.o -c /home/rainy/clone/kdevelop-projects/Karia/build/src/.rcc/qmlcache/karia_qmlcache_loader.cpp",
+  "file": "/home/rainy/clone/kdevelop-projects/Karia/build/src/.rcc/qmlcache/karia_qmlcache_loader.cpp",
+  "output": "/home/rainy/clone/kdevelop-projects/Karia/build/src/CMakeFiles/karia.dir/.rcc/qmlcache/karia_qmlcache_loader.cpp.o"
+},
+{
+  "directory": "/home/rainy/clone/kdevelop-projects/Karia/build",
+  "command": "/usr/bin/c++ -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_OPENGL_LIB -DQT_QMLINTEGRATION_LIB -DQT_QML_LIB -DQT_QUICK_LIB -I/home/rainy/clone/kdevelop-projects/Karia/build/src/karia_autogen/include -I/home/rainy/clone/kdevelop-projects/Karia/src -isystem /usr/include/qt6/QtQml -isystem /usr/include/qt6 -isystem /usr/include/qt6/QtCore -isystem /usr/lib/qt6/mkspecs/linux-g++ -isystem /usr/include/qt6/QtQmlIntegration -isystem /usr/include/qt6/QtNetwork -isystem /usr/include/qt6/QtQuick -isystem /usr/include/qt6/QtGui -isystem /usr/include/qt6/QtOpenGL -g -std=gnu++17 -mno-direct-extern-access -o src/CMakeFiles/karia.dir/.rcc/qmlcache/karia_qml_Main_qml.cpp.o -c /home/rainy/clone/kdevelop-projects/Karia/build/src/.rcc/qmlcache/karia_qml_Main_qml.cpp",
+  "file": "/home/rainy/clone/kdevelop-projects/Karia/build/src/.rcc/qmlcache/karia_qml_Main_qml.cpp",
+  "output": "/home/rainy/clone/kdevelop-projects/Karia/build/src/CMakeFiles/karia.dir/.rcc/qmlcache/karia_qml_Main_qml.cpp.o"
+},
+{
+  "directory": "/home/rainy/clone/kdevelop-projects/Karia/build",
+  "command": "/usr/bin/c++ -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_OPENGL_LIB -DQT_QMLINTEGRATION_LIB -DQT_QML_LIB -DQT_QUICK_LIB -I/home/rainy/clone/kdevelop-projects/Karia/build/src/karia_autogen/include -I/home/rainy/clone/kdevelop-projects/Karia/src -isystem /usr/include/qt6/QtQml -isystem /usr/include/qt6 -isystem /usr/include/qt6/QtCore -isystem /usr/lib/qt6/mkspecs/linux-g++ -isystem /usr/include/qt6/QtQmlIntegration -isystem /usr/include/qt6/QtNetwork -isystem /usr/include/qt6/QtQuick -isystem /usr/include/qt6/QtGui -isystem /usr/include/qt6/QtOpenGL -g -std=gnu++17 -mno-direct-extern-access -o src/CMakeFiles/karia.dir/.qt/rcc/qrc_karia_raw_qml_0.cpp.o -c /home/rainy/clone/kdevelop-projects/Karia/build/src/.qt/rcc/qrc_karia_raw_qml_0.cpp",
+  "file": "/home/rainy/clone/kdevelop-projects/Karia/build/src/.qt/rcc/qrc_karia_raw_qml_0.cpp",
+  "output": "/home/rainy/clone/kdevelop-projects/Karia/build/src/CMakeFiles/karia.dir/.qt/rcc/qrc_karia_raw_qml_0.cpp.o"
+}
+]

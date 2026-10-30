@@ -1,0 +1,15 @@
+{
+    "formatRevision": 1,
+    "modules": [
+        {
+            "moduleFiles": [
+                {
+                    "entries": [
+                    ],
+                    "filePath": "/home/rainy/clone/kdevelop-projects/Karia/src/qml/Main.qml"
+                }
+            ],
+            "moduleId": "Karia(karia)"
+        }
+    ]
+}

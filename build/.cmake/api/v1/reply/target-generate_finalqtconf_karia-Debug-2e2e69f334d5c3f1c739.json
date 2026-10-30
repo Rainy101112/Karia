@@ -1,0 +1,142 @@
+{
+	"backtrace" : 3,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_custom_target",
+			"_qt_internal_write_qmldir_part",
+			"add_custom_command"
+		],
+		"files" : 
+		[
+			"/usr/lib/cmake/Qt6Qml/Qt6QmlMacros.cmake",
+			"/usr/lib/cmake/Qt6Qml/Qt6QmlMacros.cmake:1246:EVAL",
+			"CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 2
+			},
+			{
+				"file" : 2,
+				"line" : -1,
+				"parent" : 0
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 2,
+				"parent" : 1
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 305,
+				"parent" : 2
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 291,
+				"parent" : 2
+			}
+		]
+	},
+	"codemodelVersion" : 
+	{
+		"major" : 2,
+		"minor" : 11
+	},
+	"dependencies" : 
+	[
+		{
+			"id" : "karia_qmlimportscan::@145eef247bfb46b6828c"
+		}
+	],
+	"folder" : 
+	{
+		"name" : "QtInternalTargets"
+	},
+	"id" : "generate_finalqtconf_karia::@6890427a1f51a3e7e1df",
+	"name" : "generate_finalqtconf_karia",
+	"orderDependencies" : 
+	[
+		{
+			"backtrace" : 4,
+			"id" : "Qt6::qmltyperegistrar::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "karia_qmlimportscan::@145eef247bfb46b6828c"
+		}
+	],
+	"paths" : 
+	{
+		"build" : ".",
+		"source" : "."
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "",
+			"sourceIndexes" : 
+			[
+				0
+			]
+		},
+		{
+			"name" : "CMake Rules",
+			"sourceIndexes" : 
+			[
+				1,
+				2,
+				3
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 3,
+			"backtraces" : 
+			[
+				3
+			],
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/generate_finalqtconf_karia",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 0,
+			"backtraces" : 
+			[
+				0
+			],
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/generate_finalqtconf_karia.rule",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 0,
+			"backtraces" : 
+			[
+				0
+			],
+			"isGenerated" : true,
+			"path" : "build/.qt/qtconf_list.done.rule",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 0,
+			"backtraces" : 
+			[
+				0
+			],
+			"isGenerated" : true,
+			"path" : "build/src/.qt/qtconfs/karia_qt.part.conf.rule",
+			"sourceGroupIndex" : 1
+		}
+	],
+	"type" : "UTILITY"
+}
