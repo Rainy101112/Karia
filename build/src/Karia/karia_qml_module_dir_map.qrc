@@ -1,6 +1,0 @@
-<RCC>
-  <qresource prefix="/">
-    <file alias="/Karia">/home/rainy/clone/kdevelop-projects/Karia/build/src/Karia</file>
-
-  </qresource>
-</RCC>

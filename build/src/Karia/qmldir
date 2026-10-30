@@ -1,6 +1,0 @@
-module Karia
-typeinfo karia.qmltypes
-prefer :/Karia/
-Main 1.0 qml/Main.qml
-depends QtQuick
-

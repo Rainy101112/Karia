@@ -1,8 +1,0 @@
-{
-	"InstallScripts" : 
-	[
-		"/home/rainy/clone/kdevelop-projects/Karia/build/cmake_install.cmake",
-		"/home/rainy/clone/kdevelop-projects/Karia/build/src/cmake_install.cmake"
-	],
-	"Parallel" : false
-}
