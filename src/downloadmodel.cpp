@@ -38,12 +38,12 @@ QVariant DownloadModel::data(const QModelIndex &index, int role) const
         case ProgressColumn:
             return QString::number(task.progressPercent()) + QLatin1Char('%');
         case SpeedColumn:
-            return task.running ? Format::speed(task.speedBytesPerSecond) : QStringLiteral("—");
+            return task.isActive() ? Format::speed(task.speedBytesPerSecond) : QStringLiteral("—");
         case EtaColumn:
-            return task.running ? Format::eta(task.remainingBytes(), task.speedBytesPerSecond)
-                                : QStringLiteral("—");
+            return task.isActive() ? Format::eta(task.remainingBytes(), task.speedBytesPerSecond)
+                                   : QStringLiteral("—");
         case StatusColumn:
-            return task.status;
+            return displayStatus(task);
         default:
             break;
         }
@@ -51,13 +51,22 @@ QVariant DownloadModel::data(const QModelIndex &index, int role) const
 
     case Qt::DecorationRole:
         if (index.column() == FileNameColumn) {
-            if (task.completed)
+            if (task.isComplete())
                 return QIcon::fromTheme(QStringLiteral("dialog-ok"));
-            if (task.running)
-                return QIcon::fromTheme(QStringLiteral("folder-download"));
-            return QIcon::fromTheme(QStringLiteral("media-playback-pause"));
+            if (task.isError())
+                return QIcon::fromTheme(QStringLiteral("dialog-error"));
+            if (task.isPaused())
+                return QIcon::fromTheme(QStringLiteral("media-playback-pause"));
+            if (task.isWaiting())
+                return QIcon::fromTheme(QStringLiteral("media-playback-start"));
+            return QIcon::fromTheme(QStringLiteral("folder-download"));
         }
         break;
+
+    case Qt::ToolTipRole:
+        if (!task.errorMessage.isEmpty())
+            return task.errorMessage;
+        return task.fileName;
 
     case Qt::TextAlignmentRole:
         if (index.column() == SizeColumn || index.column() == ProgressColumn
@@ -68,10 +77,18 @@ QVariant DownloadModel::data(const QModelIndex &index, int role) const
 
     case ProgressRole:
         return task.progressPercent();
-    case RunningRole:
-        return task.running;
+    case ActiveRole:
+        return task.isActive();
+    case WaitingRole:
+        return task.isWaiting();
+    case PausedRole:
+        return task.isPaused();
     case CompletedRole:
-        return task.completed;
+        return task.isComplete();
+    case ErrorRole:
+        return task.isError();
+    case GidRole:
+        return task.gid;
     default:
         break;
     }
@@ -106,7 +123,7 @@ int DownloadModel::completedCount() const
 {
     int count = 0;
     for (const DownloadTask &task : m_tasks) {
-        if (task.completed)
+        if (task.isComplete())
             ++count;
     }
     return count;
@@ -117,52 +134,67 @@ int DownloadModel::incompleteCount() const
     return m_tasks.size() - completedCount();
 }
 
-qint64 DownloadModel::totalSpeed() const
+const DownloadTask &DownloadModel::taskAt(int row) const
 {
-    qint64 speed = 0;
-    for (const DownloadTask &task : m_tasks) {
-        if (task.running)
-            speed += task.speedBytesPerSecond;
+    return m_tasks.at(row);
+}
+
+void DownloadModel::syncTasks(const QList<DownloadTask> &tasks)
+{
+    // 删除 aria2 中已经不存在（且不在 stopped 列表中）的任务。
+    for (int row = m_tasks.size() - 1; row >= 0; --row) {
+        bool found = false;
+        for (const DownloadTask &task : tasks) {
+            if (task.gid == m_tasks.at(row).gid) {
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            beginRemoveRows(QModelIndex(), row, row);
+            m_tasks.removeAt(row);
+            endRemoveRows();
+        }
     }
-    return speed;
-}
 
-void DownloadModel::addTask(const DownloadTask &task)
-{
-    beginInsertRows(QModelIndex(), m_tasks.size(), m_tasks.size());
-    m_tasks.append(task);
-    endInsertRows();
+    // 更新已有任务，追加新任务。
+    for (const DownloadTask &task : tasks) {
+        int existingRow = -1;
+        for (int row = 0; row < m_tasks.size(); ++row) {
+            if (m_tasks.at(row).gid == task.gid) {
+                existingRow = row;
+                break;
+            }
+        }
+
+        if (existingRow >= 0) {
+            if (m_tasks.at(existingRow) != task) {
+                m_tasks[existingRow] = task;
+                Q_EMIT dataChanged(index(existingRow, 0), index(existingRow, ColumnCount - 1));
+            }
+        } else {
+            beginInsertRows(QModelIndex(), m_tasks.size(), m_tasks.size());
+            m_tasks.append(task);
+            endInsertRows();
+        }
+    }
 
     Q_EMIT taskCountsChanged();
 }
 
-void DownloadModel::removeTask(int row)
+QString DownloadModel::displayStatus(const DownloadTask &task) const
 {
-    if (row < 0 || row >= m_tasks.size())
-        return;
-
-    beginRemoveRows(QModelIndex(), row, row);
-    m_tasks.removeAt(row);
-    endRemoveRows();
-
-    Q_EMIT taskCountsChanged();
-}
-
-void DownloadModel::setRunning(int row, bool running)
-{
-    if (row < 0 || row >= m_tasks.size())
-        return;
-
-    DownloadTask &task = m_tasks[row];
-    if (task.completed || task.running == running)
-        return;
-
-    task.running = running;
-    task.status = running ? i18n("下载中") : i18n("已暂停");
-    if (!running)
-        task.speedBytesPerSecond = 0;
-
-    Q_EMIT dataChanged(index(row, 0), index(row, ColumnCount - 1),
-                       {Qt::DisplayRole, ProgressRole, RunningRole});
-    Q_EMIT taskCountsChanged();
+    if (task.isActive())
+        return i18n("下载中");
+    if (task.isWaiting())
+        return i18n("等待中");
+    if (task.isPaused())
+        return i18n("已暂停");
+    if (task.isComplete())
+        return i18n("已完成");
+    if (task.status == QLatin1String("removed"))
+        return i18n("已移除");
+    if (task.isError())
+        return i18n("出错");
+    return task.status;
 }

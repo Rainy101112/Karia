@@ -1,6 +1,8 @@
 add_executable(karia
     main.cpp
     mainwindow.cpp
+    aria2client.cpp
+    settingsdialog.cpp
     downloadmodel.cpp
     downloadfilterproxymodel.cpp
     progressbardelegate.cpp
@@ -15,10 +17,12 @@ qt_add_resources(karia "kariaui"
 
 target_link_libraries(karia PRIVATE
     Qt6::Widgets
+    Qt6::Network
     KF6::XmlGui
     KF6::CoreAddons
     KF6::WidgetsAddons
     KF6::I18n
+    KF6::ConfigCore
 )
 
 install(TARGETS karia DESTINATION bin)

@@ -27,6 +27,11 @@ inline QString speed(qint64 bytesPerSecond)
     return bytes(bytesPerSecond) + QStringLiteral("/s");
 }
 
+inline QString rate(qint64 bytesPerSecond)
+{
+    return bytes(bytesPerSecond) + QStringLiteral("/s");
+}
+
 inline QString eta(qint64 remainingBytes, qint64 bytesPerSecond)
 {
     if (remainingBytes <= 0 || bytesPerSecond <= 0)

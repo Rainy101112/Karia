@@ -1,12 +1,15 @@
 #include "mainwindow.h"
 
+#include "aria2client.h"
 #include "downloadfilterproxymodel.h"
 #include "downloadmodel.h"
 #include "formatutils.h"
 #include "progressbardelegate.h"
+#include "settingsdialog.h"
 
 #include <QAction>
 #include <QApplication>
+#include <QDialog>
 #include <QFrame>
 #include <QHeaderView>
 #include <QIcon>
@@ -18,6 +21,7 @@
 #include <QSplitter>
 #include <QStatusBar>
 #include <QTableView>
+#include <QTimer>
 #include <QToolBar>
 #include <QTreeWidget>
 #include <QUrl>
@@ -26,9 +30,11 @@
 #include <KAboutApplicationDialog>
 #include <KAboutData>
 #include <KActionCollection>
+#include <KConfigGroup>
 #include <KGuiItem>
 #include <KLocalizedString>
 #include <KMessageBox>
+#include <KSharedConfig>
 #include <KStandardGuiItem>
 #include <KToolBar>
 
@@ -36,6 +42,8 @@ MainWindow::MainWindow(QWidget *parent)
     : KXmlGuiWindow(parent)
     , m_model(new DownloadModel(this))
     , m_proxy(new DownloadFilterProxyModel(this))
+    , m_client(new Aria2Client(this))
+    , m_pollTimer(new QTimer(this))
 {
     setWindowTitle(i18n("Karia"));
     setWindowIcon(QIcon::fromTheme(QStringLiteral("folder-download")));
@@ -44,7 +52,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     setupActions();
     setupCentralWidget();
-    populateSampleTasks();
+    loadSettings();
 
     // 从内嵌资源加载 XMLGUI 布局，生成菜单栏、工具栏与状态栏。
     setupGUI(Default, QStringLiteral(":/kariaui.rc"));
@@ -55,10 +63,7 @@ MainWindow::MainWindow(QWidget *parent)
     }
 
     setupStatusBar();
-
-    connect(m_model, &DownloadModel::taskCountsChanged, this, &MainWindow::updateCategoryCounts);
-    connect(m_model, &DownloadModel::taskCountsChanged, this, &MainWindow::updateStatusBar);
-    connect(m_model, &QAbstractItemModel::dataChanged, this, &MainWindow::updateActions);
+    setupBackend();
 
     updateCategoryCounts();
     updateStatusBar();
@@ -192,49 +197,95 @@ void MainWindow::setupCentralWidget()
 
 void MainWindow::setupStatusBar()
 {
+    m_connectionLabel = new QLabel(this);
     m_statusLabel = new QLabel(this);
     m_speedLabel = new QLabel(this);
     m_speedLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 
+    statusBar()->addWidget(m_connectionLabel);
     statusBar()->addWidget(m_statusLabel, 1);
     statusBar()->addPermanentWidget(m_speedLabel);
+
+    updateConnectionStatus();
 }
 
-void MainWindow::populateSampleTasks()
+void MainWindow::setupBackend()
 {
-    const auto addTask = [this](const QString &fileName, qint64 total, qint64 downloaded,
-                                qint64 speed, const QString &status, bool running,
-                                bool completed) {
-        DownloadTask task;
-        task.fileName = fileName;
-        task.totalBytes = total;
-        task.downloadedBytes = downloaded;
-        task.speedBytesPerSecond = speed;
-        task.status = status;
-        task.running = running;
-        task.completed = completed;
-        m_model->addTask(task);
-    };
+    connect(m_client, &Aria2Client::tasksFetched, this, &MainWindow::onTasksFetched);
+    connect(m_client, &Aria2Client::globalStatFetched, this, &MainWindow::onGlobalStat);
+    connect(m_client, &Aria2Client::errorOccurred, this, &MainWindow::onBackendError);
+    connect(m_client, &Aria2Client::operationFinished, this, &MainWindow::refresh);
 
-    addTask(QStringLiteral("ubuntu-24.04.1-desktop-amd64.iso"), 6100000000LL, 2562000000LL,
-            13200000LL, i18n("下载中"), true, false);
-    addTask(QStringLiteral("kde-neon-user-edition-20241031.iso"), 2800000000LL, 2184000000LL,
-            8500000LL, i18n("下载中"), true, false);
-    addTask(QStringLiteral("aria2-1.37.0.tar.xz"), 1450000LL, 1450000LL, 0, i18n("已完成"),
-            false, true);
-    addTask(QStringLiteral("qt-everywhere-src-6.8.0.tar.xz"), 1100000000LL, 165000000LL, 0,
-            i18n("已暂停"), false, false);
+    connect(m_model, &DownloadModel::taskCountsChanged, this, &MainWindow::updateCategoryCounts);
+    connect(m_model, &DownloadModel::taskCountsChanged, this, &MainWindow::updateStatusBar);
+    connect(m_model, &QAbstractItemModel::dataChanged, this, &MainWindow::updateActions);
+
+    connect(m_pollTimer, &QTimer::timeout, this, &MainWindow::refresh);
+    m_pollTimer->start();
+
+    refresh();
+}
+
+void MainWindow::loadSettings()
+{
+    const KConfigGroup group = KSharedConfig::openConfig()->group(QStringLiteral("aria2"));
+    const QString url = group.readEntry("rpcUrl", QStringLiteral("http://127.0.0.1:6800/jsonrpc"));
+    m_client->setRpcUrl(QUrl(url));
+    m_client->setSecret(group.readEntry("secret", QString()));
+    m_pollTimer->setInterval(qMax(1, group.readEntry("pollInterval", 1)) * 1000);
+}
+
+void MainWindow::refresh()
+{
+    m_client->fetchAllTasks();
+    m_client->getGlobalStat();
+}
+
+void MainWindow::onTasksFetched(const QList<DownloadTask> &tasks)
+{
+    m_connected = true;
+    m_lastError.clear();
+    updateConnectionStatus();
+
+    m_model->syncTasks(tasks);
+    updateActions();
+}
+
+void MainWindow::onGlobalStat(qint64 downloadSpeed, qint64 uploadSpeed, int active, int waiting,
+                              int stopped)
+{
+    Q_UNUSED(active)
+    Q_UNUSED(waiting)
+    Q_UNUSED(stopped)
+
+    m_downloadSpeed = downloadSpeed;
+    m_uploadSpeed = uploadSpeed;
+    m_connected = true;
+    updateConnectionStatus();
+    updateStatusBar();
+}
+
+void MainWindow::onBackendError(const QString &message)
+{
+    m_connected = false;
+    updateConnectionStatus();
+
+    if (message != m_lastError) {
+        m_lastError = message;
+        statusBar()->showMessage(message, 5000);
+    }
 }
 
 void MainWindow::updateActions()
 {
     const QModelIndex index = m_taskView->currentIndex();
     const bool hasSelection = index.isValid();
-    const bool completed = index.data(DownloadModel::CompletedRole).toBool();
-    const bool running = index.data(DownloadModel::RunningRole).toBool();
+    const bool paused = index.data(DownloadModel::PausedRole).toBool();
+    const bool stoppable = index.data(DownloadModel::ActiveRole).toBool()
+                           || index.data(DownloadModel::WaitingRole).toBool();
 
-    m_resumeAction->setEnabled(hasSelection && !completed && !running);
-    m_pauseAction->setEnabled(hasSelection && !completed && running);
+    m_resumeAction->setEnabled(hasSelection && paused);
+    m_pauseAction->setEnabled(hasSelection && stoppable);
     m_deleteAction->setEnabled(hasSelection);
 }
 
@@ -250,11 +301,23 @@ void MainWindow::updateCategoryCounts()
 
 void MainWindow::updateStatusBar()
 {
+    if (!m_statusLabel || !m_speedLabel)
+        return;
+
     const int total = m_model->rowCount();
     const int completed = m_model->completedCount();
 
     m_statusLabel->setText(i18n("共 %1 个任务，已完成 %2 个", total, completed));
-    m_speedLabel->setText(i18n("总速度：%1", Format::speed(m_model->totalSpeed())));
+    m_speedLabel->setText(
+        i18n("↓ %1   ↑ %2", Format::rate(m_downloadSpeed), Format::rate(m_uploadSpeed)));
+}
+
+void MainWindow::updateConnectionStatus()
+{
+    if (!m_connectionLabel)
+        return;
+
+    m_connectionLabel->setText(m_connected ? i18n("aria2：已连接") : i18n("aria2：未连接"));
 }
 
 int MainWindow::selectedSourceRow() const
@@ -274,29 +337,29 @@ void MainWindow::newDownload()
     if (!ok || url.isEmpty())
         return;
 
-    QString fileName = QUrl(url).fileName();
-    if (fileName.isEmpty())
-        fileName = i18n("未命名任务");
-
-    DownloadTask task;
-    task.fileName = fileName;
-    task.status = i18n("等待中");
-    task.running = true;
-    m_model->addTask(task);
+    m_client->addUri(QStringList{url});
 }
 
 void MainWindow::resumeSelected()
 {
     const int row = selectedSourceRow();
-    if (row >= 0)
-        m_model->setRunning(row, true);
+    if (row < 0)
+        return;
+
+    const DownloadTask &task = m_model->taskAt(row);
+    if (task.isPaused())
+        m_client->unpause(task.gid);
 }
 
 void MainWindow::pauseSelected()
 {
     const int row = selectedSourceRow();
-    if (row >= 0)
-        m_model->setRunning(row, false);
+    if (row < 0)
+        return;
+
+    const DownloadTask &task = m_model->taskAt(row);
+    if (task.isActive() || task.isWaiting())
+        m_client->pause(task.gid);
 }
 
 void MainWindow::deleteSelected()
@@ -305,23 +368,41 @@ void MainWindow::deleteSelected()
     if (row < 0)
         return;
 
+    const DownloadTask &task = m_model->taskAt(row);
+
     const auto answer = KMessageBox::questionTwoActions(
         this,
-        i18n("确定要删除选中的任务吗？"),
+        i18n("确定要删除任务“%1”吗？", task.fileName),
         i18n("删除任务"),
         KGuiItem(i18n("删除"), QStringLiteral("edit-delete")),
         KStandardGuiItem::cancel());
 
-    if (answer == KMessageBox::PrimaryAction)
-        m_model->removeTask(row);
+    if (answer != KMessageBox::PrimaryAction)
+        return;
+
+    if (task.isComplete() || task.isError())
+        m_client->removeDownloadResult(task.gid);
+    else
+        m_client->remove(task.gid);
 }
 
 void MainWindow::showSettings()
 {
-    KMessageBox::information(
-        this,
-        i18n("设置功能尚未实现。\n后续可在这里配置 aria2 RPC 地址、下载目录、最大并发数等。"),
-        i18n("设置"));
+    SettingsDialog dialog(m_client->rpcUrl(), m_client->secret(), m_pollTimer->interval() / 1000,
+                          this);
+    if (dialog.exec() != QDialog::Accepted)
+        return;
+
+    KConfigGroup group = KSharedConfig::openConfig()->group(QStringLiteral("aria2"));
+    group.writeEntry("rpcUrl", dialog.rpcUrl().toString());
+    group.writeEntry("secret", dialog.secret());
+    group.writeEntry("pollInterval", dialog.pollInterval());
+    group.sync();
+
+    m_client->setRpcUrl(dialog.rpcUrl());
+    m_client->setSecret(dialog.secret());
+    m_pollTimer->setInterval(dialog.pollInterval() * 1000);
+    refresh();
 }
 
 void MainWindow::showAbout()

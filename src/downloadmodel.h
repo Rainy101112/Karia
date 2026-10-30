@@ -1,7 +1,7 @@
 #pragma once
 
 #include <QAbstractTableModel>
-#include <QVector>
+#include <QList>
 
 #include "downloadtask.h"
 
@@ -22,8 +22,12 @@ public:
 
     enum Role {
         ProgressRole = Qt::UserRole + 1,
-        RunningRole,
-        CompletedRole
+        ActiveRole,
+        WaitingRole,
+        PausedRole,
+        CompletedRole,
+        ErrorRole,
+        GidRole
     };
 
     explicit DownloadModel(QObject *parent = nullptr);
@@ -35,15 +39,16 @@ public:
 
     int completedCount() const;
     int incompleteCount() const;
-    qint64 totalSpeed() const;
 
-    void addTask(const DownloadTask &task);
-    void removeTask(int row);
-    void setRunning(int row, bool running);
+    const DownloadTask &taskAt(int row) const;
+
+    // 用 aria2 返回的最新任务列表增量更新模型，尽量保留选中状态。
+    void syncTasks(const QList<DownloadTask> &tasks);
 
 Q_SIGNALS:
     void taskCountsChanged();
 
 private:
-    QVector<DownloadTask> m_tasks;
+    QString displayStatus(const DownloadTask &task) const;
+    QList<DownloadTask> m_tasks;
 };
