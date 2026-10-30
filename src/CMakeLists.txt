@@ -1,16 +1,24 @@
-qt_add_executable(karia
+add_executable(karia
     main.cpp
+    mainwindow.cpp
+    downloadmodel.cpp
+    downloadfilterproxymodel.cpp
+    progressbardelegate.cpp
 )
 
-qt_add_qml_module(karia
-    URI Karia
-    VERSION 1.0
-    QML_FILES
-        qml/Main.qml
+# 将 XMLGUI 布局文件内嵌到可执行文件中，
+# 这样就不依赖安装路径，也不需要 ECM 的 kxmlgui_add_ui。
+qt_add_resources(karia "kariaui"
+    PREFIX "/"
+    FILES kariaui.rc
 )
 
-# Use the QtQuick module from Qt 6.
-target_link_libraries(karia PRIVATE Qt6::Quick)
+target_link_libraries(karia PRIVATE
+    Qt6::Widgets
+    KF6::XmlGui
+    KF6::CoreAddons
+    KF6::WidgetsAddons
+    KF6::I18n
+)
 
-# Install the executable
 install(TARGETS karia DESTINATION bin)

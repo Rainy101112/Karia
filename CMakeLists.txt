@@ -5,8 +5,14 @@ project(Karia VERSION 1.0.0 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Find the Qt Quick library
-find_package(Qt6 6.5 REQUIRED COMPONENTS Quick)
+# Qt Widgets
+find_package(Qt6 6.5 REQUIRED COMPONENTS Widgets)
+
+# KDE Frameworks 6
+find_package(KF6XmlGui REQUIRED)
+find_package(KF6CoreAddons REQUIRED)
+find_package(KF6WidgetsAddons REQUIRED)
+find_package(KF6I18n REQUIRED)
 
 qt_standard_project_setup()
 

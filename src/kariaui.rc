@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gui name="kariaui"
+     version="1"
+     xmlns="http://www.kde.org/standards/kxmlgui/1.0"
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://www.kde.org/standards/kxmlgui/1.0 http://www.kde.org/standards/kxmlgui/1.0/kxmlgui.xsd">
+  <MenuBar>
+    <Menu name="file">
+      <text>文件</text>
+      <Action name="new_download"/>
+      <Separator/>
+      <Action name="quit"/>
+    </Menu>
+    <Menu name="download">
+      <text>下载</text>
+      <Action name="resume_download"/>
+      <Action name="pause_download"/>
+      <Action name="delete_download"/>
+    </Menu>
+    <Menu name="settings">
+      <text>设置</text>
+      <Action name="preferences"/>
+    </Menu>
+    <Menu name="help">
+      <text>帮助</text>
+      <Action name="about"/>
+    </Menu>
+  </MenuBar>
+
+  <ToolBar name="mainToolBar">
+    <text>主工具栏</text>
+    <Action name="new_download"/>
+    <Action name="resume_download"/>
+    <Action name="pause_download"/>
+    <Action name="delete_download"/>
+    <Separator/>
+    <Action name="preferences"/>
+    <Action name="about"/>
+    <Separator/>
+    <Action name="quit"/>
+  </ToolBar>
+
+  <StatusBar/>
+</gui>
